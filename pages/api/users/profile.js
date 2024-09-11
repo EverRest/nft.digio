@@ -1,19 +1,21 @@
-import connectDB from '../../../utils/db';
-import User from '../../../models/User';
-import authMiddleware from '../../../middleware/authMiddleware';
+import dbMiddleware from '@/middleware/dbMiddleware';
+import authMiddleware from '@/middleware/authMiddleware';
+import { getProfile, updateProfile } from '@/controllers/profileController';
+import REQUEST_METHODS from "@/constants/requestMethods";
+import STATUS_CODES from "@/constants/statusCodes";
 
-export default async function handler(req, res) {
-    if (req.method === 'GET') {
+const handler = async (req, res) => {
+    if (req.method === REQUEST_METHODS.GET) {
         await authMiddleware(req, res, async () => {
-            res.status(200).json(req.user);
+            await getProfile(req, res);
         });
-    } else if (req.method === 'PUT') {
+    } else if (req.method === REQUEST_METHODS.PUT) {
         await authMiddleware(req, res, async () => {
-            const { username, email } = req.body;
-            const user = await User.findByIdAndUpdate(req.user._id, { username, email }, { new: true });
-            res.status(200).json(user);
+            await updateProfile(req, res);
         });
     } else {
-        res.status(405).end();
+        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
     }
-}
+};
+
+export default dbMiddleware(handler);

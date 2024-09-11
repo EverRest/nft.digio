@@ -1,20 +1,21 @@
-import connectDB from '../../../utils/db';
-import User from '../../../models/User';
-import { hashPassword } from '../../../utils/auth';
+import { register } from '@/controllers/authController';
+import REQUEST_METHODS from '@/constants/requestMethods';
+import STATUS_CODES from '@/constants/statusCodes';
 
-export default async function handler(req, res) {
-    if (req.method !== 'POST') return res.status(405).end();
+const requestHandler = async (req, res) => {
+    if (req.method === REQUEST_METHODS.POST) {
+        await register(req, res);
+    } else {
+        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+    }
+};
 
-    const { username, email, password } = req.body;
+const registerHandler = async (req, res) => {
+    try {
+        await requestHandler(req, res);
+    } catch (error) {
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+    }
+};
 
-    await connectDB();
-
-    const userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ message: 'User already exists' });
-
-    const hashedPassword = await hashPassword(password);
-
-    const user = await User.create({ username, email, password: hashedPassword });
-
-    res.status(201).json({ message: 'User created', user });
-}
+export default registerHandler;

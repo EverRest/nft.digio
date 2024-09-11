@@ -12,22 +12,33 @@ services:
     depends_on:
       - mongo
       - truffle
+    networks:
+      - nft-digio-network
 
   truffle:
     image: trufflesuite/ganache-cli
+    restart: always
     platform: linux/amd64
     ports:
       - '7545:7545'
     volumes:
       - ./contracts:/contracts
+    networks:
+      - nft-digio-network
 
   mongo:
-    image: mongo
+    image: mongo:6-jammy
     restart: always
     ports:
       - '27017:27017'
     volumes:
-      - mongo-data:/data/db
+      - dbdata:/data/db
+    networks:
+      - nft-digio-network
 
 volumes:
-  mongo-data:
+  dbdata:
+
+networks:
+  nft-digio-network:
+    driver: bridge

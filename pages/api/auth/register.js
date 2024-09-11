@@ -1,21 +1,13 @@
-import { register } from '@/controllers/authController';
-import REQUEST_METHODS from '@/constants/requestMethods';
+import {register} from '@/controllers/authController';
+import {registerSchema, validateRequest} from '@/middleware/validationMiddleware';
 import STATUS_CODES from '@/constants/statusCodes';
+import REQUEST_METHODS from "@/constants/requestMethods";
 
-const requestHandler = async (req, res) => {
+const handler = async (req, res) => {
     if (req.method === REQUEST_METHODS.POST) {
-        await register(req, res);
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+        return validateRequest(registerSchema)(req, res, () => register(req, res));
     }
+    res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
 };
 
-const registerHandler = async (req, res) => {
-    try {
-        await requestHandler(req, res);
-    } catch (error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
-    }
-};
-
-export default registerHandler;
+export default handler;

@@ -1,10 +1,9 @@
-import dbMiddleware from "@/middleware/dbMiddleware";
-import {getBid, updateBid, deleteBid} from '@/controllers/bidController';
+import { getBid, updateBid, deleteBid } from '@/controllers/bidController';
 import authMiddleware from '@/middleware/authMiddleware';
 import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from "@/constants/statusCodes";
 
-const handler = async (req, res) => {
+const requestHandler = async (req, res) => {
     if (req.method === REQUEST_METHODS.GET) {
         await getBid(req, res);
     } else if (req.method === REQUEST_METHODS.PUT) {
@@ -20,4 +19,12 @@ const handler = async (req, res) => {
     }
 };
 
-export default dbMiddleware(handler);
+const bidHandler = async (req, res) => {
+    try {
+        await requestHandler(req, res);
+    } catch (error) {
+        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
+    }
+};
+
+export default bidHandler;

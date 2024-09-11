@@ -9,7 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@maticnetwork/maticjs": "^3.9.2",
+    "@openzeppelin/contracts": "^5.0.2",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.13.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.6.1",
     "next": "14.2.9",

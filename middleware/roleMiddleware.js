@@ -1,3 +1,4 @@
+import '@/config/envConfig';
 import jwt from 'jsonwebtoken';
 import User from '@/models/User';
 import connectDB from '@/utils/db';

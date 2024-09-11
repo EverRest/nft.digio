@@ -1,0 +1,33 @@
+services:
+  app:
+    image: node:lts
+    working_dir: /app
+    restart: always
+    volumes:
+      - ./:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    command: sh -c "npm install && npm run dev"
+    depends_on:
+      - mongo
+      - truffle
+
+  truffle:
+    image: trufflesuite/ganache-cli
+    platform: linux/amd64
+    ports:
+      - '7545:7545'
+    volumes:
+      - ./contracts:/contracts
+
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

@@ -2,7 +2,8 @@ const ROLES = {
     ADMIN: 'admin',
     SELLER: 'seller',
     BUYER: 'buyer',
-    GUEST: 'guest'
+    GUEST: 'guest',
+    USER: 'user'
 };
 
 export default ROLES;

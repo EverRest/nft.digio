@@ -12,6 +12,7 @@
     "@maticnetwork/maticjs": "^3.9.2",
     "@openzeppelin/contracts": "^5.0.2",
     "bcryptjs": "^2.4.3",
+    "cookie": "^0.6.0",
     "dotenv": "^16.4.5",
     "ethers": "^6.13.2",
     "joi": "^17.13.3",

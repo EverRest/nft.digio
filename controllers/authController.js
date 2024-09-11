@@ -1,5 +1,5 @@
 import User from '@/models/User';
-import { comparePassword, hashPassword } from '@/utils/auth';
+import {comparePassword, generateToken, hashPassword} from '@/utils/auth';
 import STATUS_CODES from '@/constants/statusCodes';
 import connectDB from '@/utils/db';
 
@@ -27,9 +27,8 @@ export const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: 'Invalid email or password' });
+            return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: 'No user in database' });
         }
-
         const isPasswordValid = await comparePassword(password, user.password);
         if (!isPasswordValid) {
             return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: 'Invalid email or password' });

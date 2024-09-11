@@ -21,6 +21,7 @@ const UserSchema = new mongoose.Schema({
     },
     verified: { type: Boolean, default: false },
     collections: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Collection' }],
+    role: { type: String, default: 'user' },
 });
 
 export default mongoose.models.User || mongoose.model('User', UserSchema);

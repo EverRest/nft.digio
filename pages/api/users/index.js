@@ -8,7 +8,7 @@ import STATUS_CODES from "@/constants/statusCodes";
 const requestHandler = async (req, res) => {
     if (req.method === REQUEST_METHODS.GET) {
         await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.ADMIN])(req, res, async () => {
+            await roleMiddleware([ROLES.USER])(req, res, async () => {
                 await getUsers(req, res);
             });
         });

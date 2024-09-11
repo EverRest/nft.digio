@@ -1,3 +1,4 @@
+import '@/config/envConfig';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
@@ -11,5 +12,6 @@ export const comparePassword = async (password, hashedPassword) => {
 };
 
 export const generateToken = (user) => {
-    return jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    console.log('Signing secret:', process.env.JWT_SECRET); // Log the signing secret
+    return jwt.sign({ id: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
 };

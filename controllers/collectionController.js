@@ -16,6 +16,9 @@ export const getCollections = async (req, res) => {
 export const getCollection = async (req, res) => {
     try {
         await connectDB();
+        if (!req.params || !req.params.id) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({ message: 'Collection ID is required' });
+        }
         const collection = await Collection.findById(req.params.id).populate('items');
         if (!collection) return res.status(STATUS_CODES.NOT_FOUND).json({ message: 'Collection not found' });
         res.json(collection);
@@ -40,6 +43,9 @@ export const createCollection = async (req, res) => {
 export const updateCollection = async (req, res) => {
     try {
         await connectDB();
+        if (!req.params || !req.params.id) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({ message: 'Collection ID is required' });
+        }
         const collection = await Collection.findByIdAndUpdate(req.params.id, req.body, { new: true }).populate('items');
         if (!collection) return res.status(STATUS_CODES.NOT_FOUND).json({ message: 'Collection not found' });
         res.json(collection);
@@ -52,6 +58,9 @@ export const updateCollection = async (req, res) => {
 export const deleteCollection = async (req, res) => {
     try {
         await connectDB();
+        if (!req.params || !req.params.id) {
+            return res.status(STATUS_CODES.BAD_REQUEST).json({ message: 'Collection ID is required' });
+        }
         const collection = await Collection.findByIdAndDelete(req.params.id);
         if (!collection) return res.status(STATUS_CODES.NOT_FOUND).json({ message: 'Collection not found' });
         res.json({ message: 'Collection deleted' });

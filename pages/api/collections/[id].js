@@ -1,21 +1,24 @@
 import authMiddleware from '@/middleware/authMiddleware';
 import roleMiddleware from '@/middleware/roleMiddleware';
-import { getTransactions, createTransaction } from '@/controllers/transactionController';
+import { getCollection, updateCollection, deleteCollection } from '@/controllers/collectionController';
 import REQUEST_METHODS from "@/constants/requestMethods";
-import ROLES from "@/constants/roles";
 import STATUS_CODES from "@/constants/statusCodes";
 
 const requestHandler = async (req, res) => {
     if (req.method === REQUEST_METHODS.GET) {
         await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.USER])(req, res, async () => {
-                await getTransactions(req, res);
+            await getCollection(req, res);
+        });
+    } else if (req.method === REQUEST_METHODS.PUT) {
+        await authMiddleware(req, res, async () => {
+            await roleMiddleware(['admin', 'editor'])(req, res, async () => {
+                await updateCollection(req, res);
             });
         });
-    } else if (req.method === REQUEST_METHODS.POST) {
+    } else if (req.method === REQUEST_METHODS.DELETE) {
         await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.USER])(req, res, async () => {
-                await createTransaction(req, res);
+            await roleMiddleware(['admin'])(req, res, async () => {
+                await deleteCollection(req, res);
             });
         });
     } else {
@@ -23,7 +26,7 @@ const requestHandler = async (req, res) => {
     }
 };
 
-const transactionsHandler = async (req, res) => {
+const collectionHandler = async (req, res) => {
     try {
         await requestHandler(req, res);
     } catch (error) {
@@ -31,4 +34,4 @@ const transactionsHandler = async (req, res) => {
     }
 };
 
-export default transactionsHandler;
+export default collectionHandler;

@@ -1,29 +1,27 @@
 import authMiddleware from '@/middleware/authMiddleware';
-import roleMiddleware from '@/middleware/roleMiddleware';
-import { getTransactions, createTransaction } from '@/controllers/transactionController';
+import { getTransaction, updateTransaction, deleteTransaction } from '@/controllers/transactionController';
 import REQUEST_METHODS from "@/constants/requestMethods";
-import ROLES from "@/constants/roles";
 import STATUS_CODES from "@/constants/statusCodes";
 
 const requestHandler = async (req, res) => {
     if (req.method === REQUEST_METHODS.GET) {
         await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.USER])(req, res, async () => {
-                await getTransactions(req, res);
-            });
+            await getTransaction(req, res);
         });
-    } else if (req.method === REQUEST_METHODS.POST) {
+    } else if (req.method === REQUEST_METHODS.PUT) {
         await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.USER])(req, res, async () => {
-                await createTransaction(req, res);
-            });
+            await updateTransaction(req, res);
+        });
+    } else if (req.method === REQUEST_METHODS.DELETE) {
+        await authMiddleware(req, res, async () => {
+            await deleteTransaction(req, res);
         });
     } else {
         res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
     }
 };
 
-const transactionsHandler = async (req, res) => {
+const transactionHandler = async (req, res) => {
     try {
         await requestHandler(req, res);
     } catch (error) {
@@ -31,4 +29,4 @@ const transactionsHandler = async (req, res) => {
     }
 };
 
-export default transactionsHandler;
+export default transactionHandler;

@@ -9,7 +9,9 @@ export const getBid = async (req, res) => {
             return res.status(STATUS_CODES.BAD_REQUEST).json({ message: 'Bid ID is required' });
         }
         const bid = await Bid.findById(req.query.id).populate('item user');
-        if (!bid) return res.status(STATUS_CODES.NOT_FOUND).json({ message: 'Bid not found' });
+        if (!bid) {
+            return res.status(STATUS_CODES.NOT_FOUND).json({ message: 'Bid not found' });
+        }
         res.status(STATUS_CODES.OK).json(bid);
     } catch (error) {
         console.error('Error fetching bid:', error);

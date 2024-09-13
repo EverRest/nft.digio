@@ -4,6 +4,9 @@ import { getTransactions, createTransaction } from '@/controllers/transactionCon
 import REQUEST_METHODS from "@/constants/requestMethods";
 import ROLES from "@/constants/roles";
 import STATUS_CODES from "@/constants/statusCodes";
+import { storeTransactionSchema } from "@/validations/transactionValidation";
+import validateRequest from '@/validations/requestValidator';
+import handler from '@/utils/handler';
 
 const requestHandler = async (req, res) => {
     switch (req.method) {
@@ -17,7 +20,9 @@ const requestHandler = async (req, res) => {
         case REQUEST_METHODS.POST:
             await authMiddleware(req, res, async () => {
                 await roleMiddleware([ROLES.USER])(req, res, async () => {
-                    await createTransaction(req, res);
+                    validateRequest(storeTransactionSchema)(req, res, async () => {
+                        await createTransaction(req, res);
+                    });
                 });
             });
             break;
@@ -27,12 +32,6 @@ const requestHandler = async (req, res) => {
     }
 };
 
-const transactionsHandler = async (req, res) => {
-    try {
-        await requestHandler(req, res);
-    } catch (error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
-    }
-};
+const transactionsHandler = (req, res) => handler(requestHandler, req, res);
 
 export default transactionsHandler;

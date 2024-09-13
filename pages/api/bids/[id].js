@@ -1,16 +1,22 @@
-import { createBid, getBid } from '@/controllers/bidController';
+import {getBid, updateBid} from '@/controllers/bidController';
 import authMiddleware from '@/middleware/authMiddleware';
 import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from "@/constants/statusCodes";
+import {updateBidSchema} from "@/validations/bidValidation";
+import validateRequest from "@/validations/requestValidator";
+import handler from '@/utils/handler';
 
 const requestHandler = async (req, res) => {
     switch (req.method) {
         case REQUEST_METHODS.GET:
             await getBid(req, res);
             break;
-        case REQUEST_METHODS.POST:
+        case REQUEST_METHODS.PUT:
             await authMiddleware(req, res, async () => {
-                await createBid(req, res);
+                validateRequest(updateBidSchema)(req, res, async () => {
+                    await updateBid(req, res);
+                });
+                await updateBid(req, res);
             });
             break;
         default:
@@ -19,12 +25,6 @@ const requestHandler = async (req, res) => {
     }
 };
 
-const bidsHandler = async (req, res) => {
-    try {
-        await requestHandler(req, res);
-    } catch (error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
-    }
-};
+const bidsHandler = (req, res) => handler(requestHandler, req, res);
 
 export default bidsHandler;

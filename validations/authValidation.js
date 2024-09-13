@@ -1,5 +1,4 @@
 import Joi from 'joi';
-import STATUS_CODES from '@/constants/statusCodes';
 import ROLES from "@/constants/roles";
 
 const registerSchema = Joi.object({
@@ -33,12 +32,4 @@ const loginSchema = Joi.object({
     password: Joi.string().min(6).required(),
 });
 
-const validateRequest = (schema) => (req, res, next) => {
-    const {error} = schema.validate(req.body);
-    if (error) {
-        return res.status(STATUS_CODES.BAD_REQUEST).json({message: error.details[0].message});
-    }
-    next();
-};
-
-export {registerSchema, loginSchema, validateRequest};
+export {registerSchema, loginSchema};

@@ -3,6 +3,9 @@ import roleMiddleware from '@/middleware/roleMiddleware';
 import { getCollection, createCollection } from '@/controllers/collectionController';
 import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from "@/constants/statusCodes";
+import { storeCollectionSchema } from "@/validations/collectionValidation";
+import { validateRequest } from "@/validations/requestValidator";
+import handler from '@/utils/handler';
 
 const requestHandler = async (req, res) => {
     switch (req.method) {
@@ -14,7 +17,9 @@ const requestHandler = async (req, res) => {
         case REQUEST_METHODS.POST:
             await authMiddleware(req, res, async () => {
                 await roleMiddleware(['admin'])(req, res, async () => {
-                    await createCollection(req, res);
+                    validateRequest(storeCollectionSchema)(req, res, async () => {
+                        await createCollection(req, res);
+                    });
                 });
             });
             break;
@@ -24,12 +29,6 @@ const requestHandler = async (req, res) => {
     }
 };
 
-const collectionHandler = async (req, res) => {
-    try {
-        await requestHandler(req, res);
-    } catch (error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
-    }
-};
+const collectionHandler = (req, res) => handler(requestHandler, req, res);
 
 export default collectionHandler;

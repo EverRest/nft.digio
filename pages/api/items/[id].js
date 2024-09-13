@@ -1,21 +1,26 @@
 import connectDB from '@/utils/db';
-import { getItems, createItem } from '@/controllers/itemController';
+import { getItem, updateItem } from '@/controllers/itemController';
 import authMiddleware from '@/middleware/authMiddleware';
 import roleMiddleware from '@/middleware/roleMiddleware';
-import RequestMethods from "@/constants/requestMethods";
+import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from '@/constants/statusCodes';
+import { updateItemSchema } from "@/validations/itemValidation";
+import validateRequest from '@/validations/requestValidator';
+import handler from '@/utils/handler';
 
 await connectDB();
 
 const requestHandler = async (req, res) => {
     switch (req.method) {
-        case RequestMethods.GET:
-            await getItems(req, res);
+        case REQUEST_METHODS.GET:
+            await getItem(req, res);
             break;
-        case RequestMethods.POST:
+        case REQUEST_METHODS.PUT:
             await authMiddleware(req, res, async () => {
                 await roleMiddleware(['admin', 'seller'])(req, res, async () => {
-                    await createItem(req, res);
+                    validateRequest(updateItemSchema)(req, res, async () => {
+                        await updateItem(req, res);
+                    });
                 });
             });
             break;
@@ -25,12 +30,6 @@ const requestHandler = async (req, res) => {
     }
 };
 
-const itemsHandler = async (req, res) => {
-    try {
-        await requestHandler(req, res);
-    } catch (error) {
-        res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
-    }
-};
+const itemsHandler = (req, res) => handler(requestHandler, req, res);
 
 export default itemsHandler;

@@ -1,7 +1,8 @@
 import { login } from '@/controllers/authController';
-import { loginSchema, validateRequest } from '@/middleware/authValidationMiddleware';
+import { loginSchema } from '@/validations/authValidation';
 import STATUS_CODES from '@/constants/statusCodes';
 import REQUEST_METHODS from "@/constants/requestMethods";
+import validateRequest from '@/validations/requestValidator';
 
 const handler = async (req, res) => {
     if (req.method === REQUEST_METHODS.POST) {

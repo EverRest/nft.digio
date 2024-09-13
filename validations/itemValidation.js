@@ -11,6 +11,7 @@ const storeItemSchema = Joi.object({
     bids: Joi.array().items(Joi.string()).default([]),
     tokenId: Joi.string().required(),
     metadata: Joi.object().optional(),
+    forSale: Joi.boolean().default(false) // Added forSale flag
 });
 
 const updateItemSchema = Joi.object({
@@ -24,6 +25,7 @@ const updateItemSchema = Joi.object({
     bids: Joi.array().items(Joi.string()).optional(),
     tokenId: Joi.string().optional(),
     metadata: Joi.object().optional(),
+    forSale: Joi.boolean().optional() // Added forSale flag
 });
 
 export { storeItemSchema, updateItemSchema };

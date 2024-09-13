@@ -1,4 +1,3 @@
-// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -82,5 +81,14 @@ contract Marketplace is ReentrancyGuard, Ownable {
         IERC721(tokenAddress).transferFrom(address(this), bid.bidder, tokenId);
 
         emit BidAccepted(bid.bidder, bid.bidAmount);
+    }
+
+    // Finalize auction and transfer NFT to the highest bidder
+    function finalizeAuction(address tokenAddress, uint256 tokenId, address highestBidder) external onlyOwner {
+        Listing storage listing = listings[tokenAddress][tokenId];
+        require(!listing.isSold, "Item already sold");
+
+        listing.isSold = true;
+        IERC721(tokenAddress).transferFrom(address(this), highestBidder, tokenId);
     }
 }

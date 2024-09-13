@@ -5,9 +5,11 @@ import connectDB from '@/utils/db';
 export const getCollections = async (req, res) => {
     try {
         await connectDB();
-        console.log('Fetching collections');
-        const collections = await Collection.find().populate('items');
-        res.json(collections);
+        const collections = await Collection.find().populate('user_items');
+        res.status(STATUS_CODES.OK).json({
+            message: "Bids retrieved",
+            collections
+        });
     } catch (error) {
         console.error('Error fetching collections:', error);
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({message: 'Internal Server Error'});

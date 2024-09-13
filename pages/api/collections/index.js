@@ -2,9 +2,9 @@ import authMiddleware from '@/middleware/authMiddleware';
 import roleMiddleware from '@/middleware/roleMiddleware';
 import { getCollection, createCollection } from '@/controllers/collectionController';
 import REQUEST_METHODS from "@/constants/requestMethods";
-import STATUS_CODES from "@/constants/statusCodes";
-import { storeCollectionSchema } from "@/validations/collectionValidation";
-import { validateRequest } from "@/validations/requestValidator";
+import STATUS_CODES from '@/constants/statusCodes';
+import { storeCollectionSchema } from '@/validations/collectionValidation';
+import validateRequest from '@/validations/requestValidator';
 import handler from '@/utils/handler';
 
 const requestHandler = async (req, res) => {

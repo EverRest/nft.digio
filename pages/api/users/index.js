@@ -1,9 +1,9 @@
 import authMiddleware from '@/middleware/authMiddleware';
 import roleMiddleware from '@/middleware/roleMiddleware';
 import { getUsers } from '@/controllers/userController';
-import REQUEST_METHODS from "@/constants/requestMethods";
-import ROLES from "@/constants/roles";
-import STATUS_CODES from "@/constants/statusCodes";
+import REQUEST_METHODS from '@/constants/requestMethods';
+import ROLES from '@/constants/roles';
+import STATUS_CODES from '@/constants/statusCodes';
 import handler from '@/utils/handler';
 
 const requestHandler = async (req, res) => {

@@ -8,16 +8,20 @@ import STATUS_CODES from '@/constants/statusCodes';
 await connectDB();
 
 const requestHandler = async (req, res) => {
-    if (req.method === RequestMethods.GET) {
-        await getItems(req, res);
-    } else if (req.method === RequestMethods.POST) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware(['admin', 'seller'])(req, res, async () => {
-                await createItem(req, res);
+    switch (req.method) {
+        case RequestMethods.GET:
+            await getItems(req, res);
+            break;
+        case RequestMethods.POST:
+            await authMiddleware(req, res, async () => {
+                await roleMiddleware(['admin', 'seller'])(req, res, async () => {
+                    await createItem(req, res);
+                });
             });
-        });
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
+        default:
+            res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
     }
 };
 

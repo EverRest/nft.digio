@@ -1,5 +1,5 @@
 import {register} from '@/controllers/authController';
-import {registerSchema, validateRequest} from '@/middleware/validationMiddleware';
+import {registerSchema, validateRequest} from '@/middleware/authValidationMiddleware';
 import STATUS_CODES from '@/constants/statusCodes';
 import REQUEST_METHODS from "@/constants/requestMethods";
 

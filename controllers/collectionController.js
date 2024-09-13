@@ -5,6 +5,7 @@ import connectDB from '@/utils/db';
 export const getCollections = async (req, res) => {
     try {
         await connectDB();
+        console.log('Fetching collections');
         const collections = await Collection.find().populate('items');
         res.json(collections);
     } catch (error) {
@@ -16,12 +17,12 @@ export const getCollections = async (req, res) => {
 export const getCollection = async (req, res) => {
     try {
         await connectDB();
-        if (!req.params || !req.params.id) {
-            return res.status(STATUS_CODES.BAD_REQUEST).json({ message: 'Collection ID is required' });
-        }
-        const collection = await Collection.findById(req.params.id).populate('items');
+        const collection = await Collection.find().populate('items');
         if (!collection) return res.status(STATUS_CODES.NOT_FOUND).json({ message: 'Collection not found' });
-        res.json(collection);
+        res.status(STATUS_CODES.OK).json({
+            message: "Collection retrieved",
+           collection
+        });
     } catch (error) {
         console.error('Error fetching collection:', error);
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });

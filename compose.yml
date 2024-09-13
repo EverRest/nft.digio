@@ -7,8 +7,8 @@ services:
       - ./:/app
       - /app/node_modules
     ports:
-      - '3000:3000'
-    command: sh -c "npm install && npm run dev"
+      - '3000:3002'
+    command: sh -c "PORT=3002 npm install && npm run dev"
     depends_on:
       - mongo
       - truffle

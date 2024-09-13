@@ -4,20 +4,25 @@ import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from "@/constants/statusCodes";
 
 const requestHandler = async (req, res) => {
-    if (req.method === REQUEST_METHODS.GET) {
-        await authMiddleware(req, res, async () => {
-            await getTransaction(req, res);
-        });
-    } else if (req.method === REQUEST_METHODS.PUT) {
-        await authMiddleware(req, res, async () => {
-            await updateTransaction(req, res);
-        });
-    } else if (req.method === REQUEST_METHODS.DELETE) {
-        await authMiddleware(req, res, async () => {
-            await deleteTransaction(req, res);
-        });
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+    switch (req.method) {
+        case REQUEST_METHODS.GET:
+            await authMiddleware(req, res, async () => {
+                await getTransaction(req, res);
+            });
+            break;
+        case REQUEST_METHODS.PUT:
+            await authMiddleware(req, res, async () => {
+                await updateTransaction(req, res);
+            });
+            break;
+        case REQUEST_METHODS.DELETE:
+            await authMiddleware(req, res, async () => {
+                await deleteTransaction(req, res);
+            });
+            break;
+        default:
+            res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
     }
 };
 

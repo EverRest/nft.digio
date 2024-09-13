@@ -7,7 +7,7 @@ import STATUS_CODES from "@/constants/statusCodes";
 const authMiddleware = async (req, res, next) => {
     const token = req.headers.authorization?.split(' ')[1];
     if (!token) {
-        console.log('No token provided');
+        console.error('No token provided');
         return res.status(STATUS_CODES.UNAUTHORIZED).json({ message: 'No token provided' });
     }
     try {
@@ -16,6 +16,7 @@ const authMiddleware = async (req, res, next) => {
         req.user = await User.findById(decoded.id).select('-password');
         next();
     } catch (error) {
+        console.error('Error verifying token:', error);
         res.status(STATUS_CODES.UNAUTHORIZED).json({ message: 'Invalid token' });
     }
 };

@@ -1,5 +1,5 @@
 import { login } from '@/controllers/authController';
-import { loginSchema, validateRequest } from '@/middleware/validationMiddleware';
+import { loginSchema, validateRequest } from '@/middleware/authValidationMiddleware';
 import STATUS_CODES from '@/constants/statusCodes';
 import REQUEST_METHODS from "@/constants/requestMethods";
 

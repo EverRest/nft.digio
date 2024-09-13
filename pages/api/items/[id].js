@@ -1,33 +1,31 @@
 import connectDB from '@/utils/db';
-import { getItem, updateItem, deleteItem } from '@/controllers/itemController';
+import { getItems, createItem } from '@/controllers/itemController';
 import authMiddleware from '@/middleware/authMiddleware';
 import roleMiddleware from '@/middleware/roleMiddleware';
-import REQUEST_METHODS from "@/constants/requestMethods";
-import STATUS_CODES from "@/constants/statusCodes";
+import RequestMethods from "@/constants/requestMethods";
+import STATUS_CODES from '@/constants/statusCodes';
 
 await connectDB();
 
 const requestHandler = async (req, res) => {
-    if (req.method === REQUEST_METHODS.GET) {
-        await getItem(req, res);
-    } else if (req.method === REQUEST_METHODS.PUT) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware(['admin', 'seller'])(req, res, async () => {
-                await updateItem(req, res);
+    switch (req.method) {
+        case RequestMethods.GET:
+            await getItems(req, res);
+            break;
+        case RequestMethods.POST:
+            await authMiddleware(req, res, async () => {
+                await roleMiddleware(['admin', 'seller'])(req, res, async () => {
+                    await createItem(req, res);
+                });
             });
-        });
-    } else if (req.method === REQUEST_METHODS.DELETE) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware(['admin'])(req, res, async () => {
-                await deleteItem(req, res);
-            });
-        });
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
+        default:
+            res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
     }
 };
 
-const itemHandler = async (req, res) => {
+const itemsHandler = async (req, res) => {
     try {
         await requestHandler(req, res);
     } catch (error) {
@@ -35,4 +33,4 @@ const itemHandler = async (req, res) => {
     }
 };
 
-export default itemHandler;
+export default itemsHandler;

@@ -1,25 +1,25 @@
-import { getBid, updateBid, deleteBid } from '@/controllers/bidController';
+import { createBid, getBid } from '@/controllers/bidController';
 import authMiddleware from '@/middleware/authMiddleware';
 import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from "@/constants/statusCodes";
 
 const requestHandler = async (req, res) => {
-    if (req.method === REQUEST_METHODS.GET) {
-        await getBid(req, res);
-    } else if (req.method === REQUEST_METHODS.PUT) {
-        await authMiddleware(req, res, async () => {
-            await updateBid(req, res);
-        });
-    } else if (req.method === REQUEST_METHODS.DELETE) {
-        await authMiddleware(req, res, async () => {
-            await deleteBid(req, res);
-        });
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+    switch (req.method) {
+        case REQUEST_METHODS.GET:
+            await getBid(req, res);
+            break;
+        case REQUEST_METHODS.POST:
+            await authMiddleware(req, res, async () => {
+                await createBid(req, res);
+            });
+            break;
+        default:
+            res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
     }
 };
 
-const bidHandler = async (req, res) => {
+const bidsHandler = async (req, res) => {
     try {
         await requestHandler(req, res);
     } catch (error) {
@@ -27,4 +27,4 @@ const bidHandler = async (req, res) => {
     }
 };
 
-export default bidHandler;
+export default bidsHandler;

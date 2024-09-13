@@ -1,28 +1,30 @@
 import authMiddleware from '@/middleware/authMiddleware';
 import roleMiddleware from '@/middleware/roleMiddleware';
-import { getCollections, createCollection } from '@/controllers/collectionController';
+import { getCollection, createCollection } from '@/controllers/collectionController';
 import REQUEST_METHODS from "@/constants/requestMethods";
 import STATUS_CODES from "@/constants/statusCodes";
 
 const requestHandler = async (req, res) => {
-    if (req.method === REQUEST_METHODS.GET) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware(['admin', 'editor'])(req, res, async () => {
-                await getCollections(req, res);
+    switch (req.method) {
+        case REQUEST_METHODS.GET:
+            await authMiddleware(req, res, async () => {
+                await getCollection(req, res);
             });
-        });
-    } else if (req.method === REQUEST_METHODS.POST) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware(['admin', 'editor'])(req, res, async () => {
-                await createCollection(req, res);
+            break;
+        case REQUEST_METHODS.POST:
+            await authMiddleware(req, res, async () => {
+                await roleMiddleware(['admin'])(req, res, async () => {
+                    await createCollection(req, res);
+                });
             });
-        });
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
+        default:
+            res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
     }
 };
 
-const collectionsHandler = async (req, res) => {
+const collectionHandler = async (req, res) => {
     try {
         await requestHandler(req, res);
     } catch (error) {
@@ -30,4 +32,4 @@ const collectionsHandler = async (req, res) => {
     }
 };
 
-export default collectionsHandler;
+export default collectionHandler;

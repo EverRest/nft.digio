@@ -21,7 +21,10 @@ export const getBids = async (req, res) => {
     try {
         await connectDB();
         const bids = await Bid.find().populate('item user');
-        res.status(STATUS_CODES.OK).json(bids);
+        res.status(STATUS_CODES.OK).json({
+            message: "Bids retrieved",
+            bids: bids
+        });
     } catch (error) {
         console.error('Error fetching bids:', error);
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });
@@ -33,7 +36,7 @@ export const createBid = async (req, res) => {
         await connectDB();
         const bid = new Bid(req.body);
         await bid.save();
-        res.status(STATUS_CODES.CREATED).json(bid);
+        res.status(STATUS_CODES.CREATED).json({ message: 'Bid created', bid });
     } catch (error) {
         console.error('Error creating bid:', error);
         res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({ message: 'Internal Server Error' });

@@ -6,20 +6,24 @@ import ROLES from "@/constants/roles";
 import STATUS_CODES from "@/constants/statusCodes";
 
 const requestHandler = async (req, res) => {
-    if (req.method === REQUEST_METHODS.GET) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.USER])(req, res, async () => {
-                await getTransactions(req, res);
+    switch (req.method) {
+        case REQUEST_METHODS.GET:
+            await authMiddleware(req, res, async () => {
+                await roleMiddleware([ROLES.USER])(req, res, async () => {
+                    await getTransactions(req, res);
+                });
             });
-        });
-    } else if (req.method === REQUEST_METHODS.POST) {
-        await authMiddleware(req, res, async () => {
-            await roleMiddleware([ROLES.USER])(req, res, async () => {
-                await createTransaction(req, res);
+            break;
+        case REQUEST_METHODS.POST:
+            await authMiddleware(req, res, async () => {
+                await roleMiddleware([ROLES.USER])(req, res, async () => {
+                    await createTransaction(req, res);
+                });
             });
-        });
-    } else {
-        res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
+        default:
+            res.status(STATUS_CODES.METHOD_NOT_ALLOWED).end();
+            break;
     }
 };
 
